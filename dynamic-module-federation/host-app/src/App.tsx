@@ -8,10 +8,8 @@ import {
   // @ts-ignore
 } from "__federation__";
 
-const DynamicRemoteApp = lazy(() => {
-  // use undocumented feature to set remote dynamically
-  // see https://github.com/originjs/vite-plugin-federation/discussions/193
-
+function UseFeatureFlagsOrSomethingCoolToGetRemote() {
+  // default to remoteA
   let remoteConfig = {
     url: "http://localhost:9000/assets/remoteEntry.js",
     name: "remoteA",
@@ -29,13 +27,20 @@ const DynamicRemoteApp = lazy(() => {
     };
   }
 
-  __federation_method_setRemote(remoteConfig.name, {
-    url: () => Promise.resolve(remoteConfig.url),
+  return remoteConfig;
+}
+
+const DynamicRemoteApp = lazy(() => {
+
+  const {url, name, module } = UseFeatureFlagsOrSomethingCoolToGetRemote();
+
+  __federation_method_setRemote(name, {
+    url: () => Promise.resolve(url),
     format: "esm",
     from: "vite",
   });
 
-  return __federation_method_getRemote(remoteConfig.name, remoteConfig.module);
+  return __federation_method_getRemote(name, module);
 });
 
 function App() {
