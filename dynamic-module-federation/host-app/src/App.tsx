@@ -5,7 +5,6 @@ import "./App.css";
 import {
   __federation_method_getRemote,
   __federation_method_setRemote,
-  __federation_method_unwrapDefault,
   // @ts-ignore
 } from "__federation__";
 
@@ -16,7 +15,7 @@ const DynamicRemoteApp = lazy(() => {
   let remoteConfig = {
     url: "http://localhost:9000/assets/remoteEntry.js",
     name: "remoteA",
-    exposed: "./RemoteARoot",
+    module: "./RemoteARoot",
   };
 
   // insert super cool logic to determine your remote
@@ -26,7 +25,7 @@ const DynamicRemoteApp = lazy(() => {
     remoteConfig = {
       url: "http://localhost:9001/assets/remoteEntry.js",
       name: "remoteB",
-      exposed: "./RemoteBRoot",
+      module: "./RemoteBRoot",
     };
   }
 
@@ -36,7 +35,7 @@ const DynamicRemoteApp = lazy(() => {
     from: "vite",
   });
 
-  return __federation_method_getRemote(remoteConfig.name, remoteConfig.exposed);
+  return __federation_method_getRemote(remoteConfig.name, remoteConfig.module);
 });
 
 function App() {
